@@ -1,0 +1,33 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: logger-staging
+  namespace: kube-system
+  labels:
+    k8s-app: logger-staging
+spec:
+  template:
+    metadata:
+      labels:
+        name: logger-staging
+    spec:
+      containers:
+      - name: logger-staging
+        image: 'put your registry image here => the image is being build by the Dockerfile :)'
+        volumeMounts:
+        - name: varlog
+          mountPath: /var/log
+        - name: varlibdockercontainers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+      imagePullSecrets:
+        - name: 'set_your_secret_here'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: varlog
+        hostPath:
+          path: /var/log
+      - name: varlibdockercontainers
+        hostPath:
+          path: /var/lib/docker/containers
